@@ -2,6 +2,7 @@
 const e = require("express");
 const realtorModel = require("../models/realtorModel.js");
 const jwt = require("jsonwebtoken");
+const { httpRequest } = require('../utils/httpRequest.js');
 
 module.exports = {
   updateBookmark: (req, res) => {
