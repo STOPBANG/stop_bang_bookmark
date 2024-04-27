@@ -11,6 +11,9 @@ app.use(bodyParser.json());
 
 app.use(cookieParser(process.env.COOKIE_SECRET_KEY));
 
+//Routers
+const realtorRouter = require("./routers/realtorRouter");
+
 //View
 const layouts = require("express-ejs-layouts");
 app.set("view engine", "ejs");
@@ -30,7 +33,7 @@ app.use(express.urlencoded({ extended: false }));
 const realtorController = require("./controllers/realtorController");
 
 //입주민이 보는 공인중개사 페이지 접근
-app.get("/:ra_regno/bookmark", realtorController.updateBookmark);
+app.use("/realtor", realtorRouter);
 
 app.listen(app.get("port"), () => {
   console.log("Bookmark app listening on port "+app.get("port"));
