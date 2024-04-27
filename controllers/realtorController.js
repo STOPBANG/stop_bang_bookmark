@@ -5,31 +5,43 @@ const jwt = require("jsonwebtoken");
 
 module.exports = {
   updateBookmark: (req, res) => {
-    if (req.cookies.authToken == undefined)
-      res.render("notFound.ejs", { message: "로그인이 필요합니다" });
-    else {
-      const decoded = jwt.verify(
-        req.cookies.authToken,
-        process.env.JWT_SECRET_KEY
-      );
-      const r_username = decoded.userId;
-      if (r_username === null)
-        res.render("notFound.ejs", { message: "로그인이 필요합니다" });
-      else {
-        let body = {
-          r_username: r_username,
-          raRegno: req.params.ra_regno,
-          isBookmark: req.body.bookmarkData,
-        };
-        realtorModel.updateBookmark(r_username, body, (result, err) => {
-          if (result === null) {
-            console.log("error occured: ", err);
-          } else {
-            console.log(result);
-            res.redirect(`/realtor/${req.params.ra_regno}`);
-          }
-        });
+    const decoded = jwt.verify(
+      req.cookies.authToken,
+      process.env.JWT_SECRET_KEY
+    );
+    const r_username = decoded.userId;
+
+    // [start] 북마크 저장하기
+    postOptions = {
+      host: 'stop_bang_sub_feature_DB',
+      port: process.env.PORT,
+      path: `/db/agent/update`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       }
     }
+    const requestBody = {
+      r_username: r_username,
+      raRegno: req.params.ra_regno
+    }
+    httpRequest(postOptions, requestBody)
+    .then(result => {
+      if (result === null) {
+        console.log("error occured: ", err);
+      } else {
+        res.json({
+          update: result.body[0]
+        });
+      }
+    });
+    // realtorModel.updateBookmark(r_username, body, (result, err) => {
+    //   if (result === null) {
+    //     console.log("error occured: ", err);
+    //   } else {
+    //     console.log(result);
+    //     res.redirect(`/realtor/${req.params.ra_regno}`);
+    //   }
+    // });
   }
 };
