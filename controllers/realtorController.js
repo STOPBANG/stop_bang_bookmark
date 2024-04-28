@@ -20,7 +20,7 @@ module.exports = {
     }
     let requestBody = {username: r_username};
     result = await httpRequest(getOptions, requestBody);
-    console.log(result.body);
+    console.log(result);
     const r_id = result.body.r_id;
     // [end] 로그인 계정 정보 가져오기
 
