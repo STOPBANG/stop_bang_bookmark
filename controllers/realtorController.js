@@ -9,17 +9,17 @@ module.exports = {
     const r_username = req.body.userId;
         
     // [start] 로그인 계정 r_id 가져오기
-    getOptions = {
+    postOptions = {
       host: 'stop_bang_auth_DB',
       port: process.env.PORT,
       path: `/db/resident/findById`,
-      method: 'GET',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       }
     }
     let requestBody = {username: r_username};
-    result = await httpRequest(getOptions, requestBody);
+    result = await httpRequest(postOptions, requestBody);
     console.log(result);
     const r_id = result.body.r_id;
     // [end] 로그인 계정 정보 가져오기
