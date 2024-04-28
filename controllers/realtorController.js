@@ -27,16 +27,8 @@ module.exports = {
       if (result === null) {
         console.log("error occured: ", err);
       } else {
-        return res.json({}); // db 수정 다시
+        res.redirect(`/realtor/${req.params.ra_regno}`);
       }
     });
-    // realtorModel.updateBookmark(r_username, body, (result, err) => {
-    //   if (result === null) {
-    //     console.log("error occured: ", err);
-    //   } else {
-    //     console.log(result);
-    //     res.redirect(`/realtor/${req.params.ra_regno}`);
-    //   }
-    // });
   }
 };
