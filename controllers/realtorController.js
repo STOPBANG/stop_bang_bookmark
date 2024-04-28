@@ -11,15 +11,15 @@ module.exports = {
     postOptions = {
       host: 'stop_bang_sub_feature_DB',
       port: process.env.PORT,
-      path: `/db/bookmark/update`,
+      path: `/db/bookmark/create`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       }
     }
     const requestBody = {
-      r_username: r_username,
-      raRegno: req.params.ra_regno
+      r_id: r_username,
+      ra_regno: req.params.ra_regno
     }
 
     httpRequest(postOptions, requestBody)
