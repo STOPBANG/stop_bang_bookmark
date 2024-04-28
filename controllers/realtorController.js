@@ -20,7 +20,7 @@ module.exports = {
     }
     let requestBody = {username: r_username};
     result = await httpRequest(postOptions, requestBody);
-    const r_id = result.body[0].r_id;
+    const r_id = result.body[0].id;
     // [end] 로그인 계정 정보 가져오기
 
     // [start] 북마크 저장하기
