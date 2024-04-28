@@ -1,12 +1,25 @@
 //Models
 const e = require("express");
-const realtorModel = require("../models/realtorModel.js");
-const jwt = require("jsonwebtoken");
 const { httpRequest } = require('../utils/httpRequest.js');
 
 module.exports = {
   updateBookmark: async (req, res) => {
-    const r_id = req.body.r_id;
+    const r_username = req.body.userId;
+    
+    // [start] 로그인 계정 r_id 가져오기
+    postOptions = {
+      host: 'stop_bang_auth_DB',
+      port: process.env.PORT,
+      path: `/db/resident/findById`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }
+    let requestBody = {username: r_username};
+    result = await httpRequest(postOptions, requestBody);
+    const r_id = result.body[0].id;
+    // [end] 로그인 계정 정보 가져오기
 
     // [start] 북마크 저장하기
     postOptions = {
