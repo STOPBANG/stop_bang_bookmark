@@ -1,9 +1,62 @@
 //Models
 const e = require("express");
+const jwt = require("jsonwebtoken");
 const { httpRequest } = require('../utils/httpRequest.js');
 
 module.exports = {
     reporting: async (req, res) => {
-        
+        //쿠키로부터 로그인 계정 알아오기
+        if (req.cookies.authToken == undefined) 
+            res.render('notFound.ejs', {message: "로그인이 필요합니다"});
+        else {
+            const decoded = jwt.verify(
+                req.cookies.authToken,
+                process.env.JWT_SECRET_KEY
+            );
+            let a_id = decoded.userId;
+            if(a_id === null) res.render('notFound.ejs', {message: "로그인이 필요합니다"});
+            
+            
+            ra_regno = await agentModel.reportProcess(req, a_id);
+            const rv_id = req.body.rv_id;
+            // 1. 신고자 이름 알아오기
+            // `SELECT r_username FROM review JOIN resident 
+            // ON resident_r_id=r_id 
+            // WHERE rv_id=?`
+
+            // 리뷰 테이블에서 rv_id=?인 데이터 가져오기
+            const reviewPostOptions = {
+                host: 'stop_bang_review_DB',
+                port: process.env.PORT,
+                path: `/db/review/findAllByReviewId/${rv_id}`,
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json',
+                }
+            };
+            let requestBody = {rv_id: rv_id};
+            const reviewResult = await httpRequest(reviewPostOptions, requestBody);
+            const resident_r_id = reviewResult.resident_r_id;
+
+            // resident 테이블에서 r_id=resident_r_id인 데이터 가져오기
+            const residentPostOptions = {
+                host: 'stop_bang_review_DB',
+                port: process.env.PORT,
+                path: `/db/review/findAllByReviewId/${rv_id}`,
+                method: 'GET',
+                headers: {
+                'Content-Type': 'application/json',
+                }
+            };
+
+            // 2. agentList_ra_regno 알아오기
+            // `SELECT agentList_ra_regno FROM review WHERE rv_id=?`
+
+            // 3. 신고 테이블에 삽입
+            // `INSERT INTO report(reporter, repo_rv_id, reportee, reason) VALUES(?, ?, ?, ?)`
+
+            console.log("신고완료");
+            res.redirect(`${req.baseUrl}/${ra_regno[0][0].agentList_ra_regno}`);
+        }
     }
 };
