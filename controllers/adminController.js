@@ -1,7 +1,6 @@
 //Models
 const e = require("express");
 const { httpRequest } = require('../utils/httpRequest.js');
-const { getOneReport } = require("../../stop_bang_msa/stop_bang_main/controllers/adminController.js");
 
 module.exports = {
   //select * from report p left join review v on p.repo_rv_id = v.rv_id;
@@ -139,6 +138,57 @@ module.exports = {
         res.redirect(`/report`);
       }
     });
+  },
+
+  deleteComment: async (req, res) => {
+    const rv_id = req.body.rvid;
+    // rv_id 인 리뷰를 opened_review, review, report에서 삭제한다
+    // 원래 트랜잭션인데.... 흠 어떻게 하지
+
+    reportPostOptions = {
+      host: 'stop_bang_sub_DB',
+      port: process.env.PORT,
+      path: `/db/report/delete`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+
+    reviewPostOptions = {
+      host: 'stop_bang_review_DB',
+      port: process.env.PORT,
+      path: `/db/review/delete`, // 이건 아직 리뷰 모델에 없음
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+
+    openedReviewPostOptions = {
+      host: 'stop_bang_review_DB',
+      port: process.env.PORT,
+      path: `/db/openedReview/delete`, // 이건 아직 리뷰 모델에 없음
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+
+    let requestBody = {rv_id: rv_id};
+
+    try {
+      const reportResult = await httpRequest(reportPostOptions, requestBody);
+      const reviewResult = await httpRequest(reviewPostOptions, requestBody);
+      const openedReviewResult = await httpRequest(openedReviewPostOptions, requestBody);
+      // 작업이 성공적으로 완료되면 리다이렉트 수행
+      res.redirect("/admin/reports");
+    } catch (error) {
+      // 작업이 실패하면 콘솔에 에러 출력
+      console.log(error);
+    }
+    
   }
+
     
 };

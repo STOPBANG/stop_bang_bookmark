@@ -13,5 +13,6 @@ router.use((req, res, next) => {
 router.get("/reports", adminController.getReports);
 router.get("/reports/confirm/:rvid/:reporter", adminController.getOneReport);
 router.post("/report/reject", adminController.deleteReport);
+router.post("/reports/deleted", adminController.deleteComment);
 
 module.exports = router;
