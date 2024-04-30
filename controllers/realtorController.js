@@ -23,7 +23,7 @@ module.exports = {
 
     // [start] 북마크 저장하기
     postOptions = {
-      host: 'stop_bang_sub_feature_DB',
+      host: 'stop_bang_sub_DB',
       port: process.env.PORT,
       path: `/db/bookmark/create`,
       method: 'POST',
