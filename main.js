@@ -14,6 +14,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET_KEY));
 //Routers
 const realtorRouter = require("./routers/realtorRouter");
 const adminRouter = require("./routers/adminRouter");
+const agentRouter = require("./routers/agentRouter");
 
 //View
 const layouts = require("express-ejs-layouts");
@@ -28,6 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/realtor", realtorRouter);
 app.use("/admin", adminRouter);
+app.use("/agent", agentRouter);
 
 app.listen(app.get("port"), () => {
   console.log("Bookmark app listening on port "+app.get("port"));
