@@ -123,7 +123,7 @@ module.exports = {
 
   // 신고 삭제
   deleteReport: async (req, res) => {
-    const r_id = req.body.r_id;
+    const rv_id = req.body.rv_id;
 
     postOptions = {
         host: 'stop_bang_sub_DB',
@@ -135,7 +135,7 @@ module.exports = {
         }
     }
 
-    let requestBody = {r_id: r_id};
+    let requestBody = {rv_id: rv_id};
 
     httpRequest(postOptions, requestBody)
     .then(result => {
