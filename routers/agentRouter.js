@@ -10,6 +10,6 @@ router.use((req, res, next) => {
 });
 
 // 후기 신고
-router.get('/report/:rv_id', agentController.reporting);
+router.post('/report', agentController.reporting);
 
 module.exports = router;
