@@ -165,7 +165,7 @@ module.exports = {
     reviewPostOptions = {
       host: 'stop_bang_review_DB',
       port: process.env.PORT,
-      path: `/db/review/delete`, // 이건 아직 리뷰 모델에 없음
+      path: `/db/review/delete`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -173,9 +173,9 @@ module.exports = {
     };
 
     openedReviewPostOptions = {
-      host: 'stop_bang_review_DB',
+      host: 'stop_bang_sub_DB',
       port: process.env.PORT,
-      path: `/db/openedReview/delete`, // 이건 아직 리뷰 모델에 없음
+      path: `/db/openedReview/delete`, 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
