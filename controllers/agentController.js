@@ -46,7 +46,7 @@ module.exports = {
             const residentPostOptions = {
                 host: 'stop_bang_auth_DB',
                 port: process.env.PORT,
-                path: `/db/review/findByPk`, 
+                path: `/db/resident/findByPk`, 
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -86,7 +86,8 @@ module.exports = {
                 rv_id: rv_id,
                 reporter: a_username,
                 reportee: username,
-                reason: req.query.reason
+                reason: req.query.reason,
+                sys_regno: agentList_ra_regno 
             };
 
             const result = await httpRequest(reportPostOptions, reportRequestBody);
