@@ -10,7 +10,7 @@ router.use((req, res, next) => {
 });
 
 /* 신고 관련 */
-router.get("/reports", adminController.getReports);
+router.get("/allReports", adminController.getReports);
 router.get("/reports/confirm/:rvid/:reporter", adminController.getOneReport);
 router.post("/report/reject", adminController.deleteReport);
 router.post("/reports/deleted", adminController.deleteComment);
