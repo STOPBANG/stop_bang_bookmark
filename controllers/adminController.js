@@ -5,9 +5,9 @@ const { httpRequest } = require('../utils/httpRequest.js');
 module.exports = {
   //select * from report p left join review v on p.repo_rv_id = v.rv_id;
   getReports: async (req, res) => {
-  
-    // 모든 신고 데이터를 가져오기
-    const reportPostOptions = {
+    try {
+      // 1. 모든 신고 데이터를 가져오기
+      const reportPostOptions = {
         host: 'stop_bang_sub_DB',
         port: process.env.PORT,
         path: `/db/report/getAllReports`,
@@ -15,14 +15,18 @@ module.exports = {
         headers: {
         'Content-Type': 'application/json',
         }
-    };
-    const allReports = await httpRequest(reportPostOptions);
-    // 신고 데이터에서 리뷰 아이디들만 추출하여 저장
-    const reviewIds = allReports.map(report => report.repo_rv_id);
+      };
+      const allReports = await httpRequest(reportPostOptions);
+      if (allReports == null) console.log("report data is null");
+      console.log("[getReports] httpRequest success: from report table");
 
-    // 각 리뷰 아이디에 대한 작업 수행
-    for (const reviewId of reviewIds) {
-        // 리뷰 아이디를 이용하여 리뷰 데이터 가져오기
+      // 2. 신고 데이터에서 리뷰 아이디들만 추출하여 저장
+      const reviewIds = allReports.map(report => report.repo_rv_id);
+      console.log("Got reviewIds from Report table");
+
+      // 3. 각 리뷰 아이디에 대한 작업 수행
+      for (const reviewId of reviewIds) {
+        // 3-1. 리뷰 아이디를 이용하여 리뷰 데이터 가져오기
         const reviewPostOptions = {
             host: 'stop_bang_review_DB',
             port: process.env.PORT,
@@ -33,11 +37,11 @@ module.exports = {
             }
         };
         const reviewResult = await httpRequest(reviewPostOptions);
-
-        // 리뷰와 해당하는 신고 데이터를 찾기
+        console.log("[getReports] httpRequest success: from review table");
+        // 3-2. 리뷰와 해당하는 신고 데이터를 찾기
         const reportResult = allReports.find(report => report.repo_rv_id === reviewId);
 
-        // 필요한 작업 수행 후 신고 데이터와 리뷰 데이터를 조합하여 배열에 추가
+        // 3-3. 필요한 작업 수행 후 신고 데이터와 리뷰 데이터를 조합하여 배열에 추가
         const report = {
             reviewId: reviewId,
             resident_r_id: reviewResult.resident_r_id,
@@ -53,13 +57,16 @@ module.exports = {
             reason: reportResult.reason  
         };
 
-        // 조합된 데이터를 배열에 추가
+        // 3-4. 조합된 데이터를 배열에 추가
         reports.push(report);
+        console.log(report);
+      }
+      // 4. 최종적으로 조합된 데이터를 클라이언트에 반환
+      res.json(reports);
+      console.log(reports);
+    } catch {
+      console.log("adminController: getReports failed");
     }
-
-    // 최종적으로 조합된 데이터를 클라이언트에 반환
-    res.json(reports);
-
   },
 
   // "/reports/confirm/:rvid/:reporter"
