@@ -91,7 +91,6 @@ module.exports = {
             };
 
             const result = await httpRequest(reportPostOptions, reportRequestBody);
-
             console.log("신고완료");
             res.redirect(`${req.baseUrl}/${ra_regno[0][0].agentList_ra_regno}`);
         }
