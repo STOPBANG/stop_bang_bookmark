@@ -4,39 +4,33 @@ const jwt = require("jsonwebtoken");
 const { httpRequest } = require('../utils/httpRequest.js');
 
 module.exports = {
+  // 자신이 열람한 후기 조회
     myReview: (req, res) => {
         /* msa */
+        const user_id = req.headers.id;
         const getOptions = {
-          host: 'stop_bang_resident_mypage',
+          host: 'stop_bang_sub_DB',
           port: process.env.MS_PORT,
-          path: '/myReview',
+          path: `/db/openedReview/findAllById/${user_id}`,
           method: 'GET',
           headers: {
-            ...
-            req.headers,
-            auth: res.locals.auth
+            'Content-Type': 'application/json',
           }
-        }
-        const forwardRequest = http.request(
-          getOptions,
-          forwardResponse => {
-            let data = '';
-            forwardResponse.on('data', chunk => {
-              data += chunk;
-            });
-            forwardResponse.on('end', () => {
-              return res.render("resident/myReview", JSON.parse(data));
-            });
-          }
-        );
-        forwardRequest.on('close', () => {
-          console.log('Sent [myReview] message to resident_mypage microservice.');
-        });
-        forwardRequest.on('error', (err) => {
-          console.log('Failed to send [myReview] message');
-          console.log(err && err.stack || err);
-        });
-        req.pipe(forwardRequest);
+        };
+
+        httpRequest(getOptions)
+          .then(result => {
+            console.log(result.body)
+            if (result === null) {
+              console.log("error occured: ", err);
+            } else {
+              res.json({
+                openReviews: result.body,
+                tagsData: tags,
+                path: 'openreview'
+              });
+            }
+          });
       },
 
 
