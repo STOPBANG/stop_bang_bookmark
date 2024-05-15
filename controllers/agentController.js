@@ -87,7 +87,7 @@ module.exports = {
                             };
 
                             return httpRequest(reportPostOptions, reportRequestBody)
-                                .then(result => {                                    console.log("신고완료");
+                                .then(result => { console.log("신고완료");
                                     return res.json(agentList_ra_regno);
                                 });
                         });
