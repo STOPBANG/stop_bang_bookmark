@@ -6,7 +6,6 @@ module.exports = {
   updateBookmark: async (req, res) => {
     const r_username = req.body.r_username;
     const sys_regno = req.params.sys_regno;
-    print(sys_regno);
     // [start] 로그인 계정 r_id 가져오기
     postOptions = {
       host: 'stop_bang_auth_DB',

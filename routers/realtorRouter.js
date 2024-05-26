@@ -10,6 +10,6 @@ router.use((req, res, next) => {
 });
 
 /* 북마크 관련 */
-router.post("/:ra_regno/bookmark", realtorController.updateBookmark);
+router.post("/:sys_regno/bookmark", realtorController.updateBookmark);
 
 module.exports = router;
