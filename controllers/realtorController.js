@@ -54,7 +54,7 @@ module.exports = {
           if (result === null) {
             console.log("error occured: ", err);
           } else {
-            res.redirect(`/realtor/${req.params.sys_regno}`);
+            return res.json(result);
           }
         });
         // [end] 북마크 삭제
@@ -81,7 +81,7 @@ module.exports = {
           if (result === null) {
             console.log("error occured: ", err);
           } else {
-            res.redirect(`/realtor/${req.params.sys_regno}`);
+            return res.json(result);
           }
         });
         // [end] 북마크 추가
