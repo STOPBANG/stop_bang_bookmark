@@ -5,7 +5,8 @@ const { httpRequest } = require('../utils/httpRequest.js');
 module.exports = {
   updateBookmark: async (req, res) => {
     const r_username = req.body.r_username;
-    
+    const sys_regno = req.params.sys_regno;
+    print(sys_regno);
     // [start] 로그인 계정 r_id 가져오기
     postOptions = {
       host: 'stop_bang_auth_DB',
@@ -25,7 +26,7 @@ module.exports = {
     const getBookmarkOptions = {
       host: 'stop_bang_sub_DB',
       port: process.env.PORT,
-      path: `/db/bookmark/findALLByIdnRegno/${r_id}/${req.params.sys_regno}`,
+      path: `/db/bookmark/findALLByIdnRegno/${r_id}/${sys_regno}`,
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
