@@ -45,11 +45,11 @@ module.exports = {
             'Content-Type': 'application/json',
           }
         }
-        requestBody = {
+        bookmarkDeleteRequestBody = {
           r_id: r_id,
           sys_regno: req.params.sys_regno
         }
-        httpRequest(postOptions, requestBody)
+        httpRequest(postOptions, bookmarkDeleteRequestBody)
         .then(result => {
           if (result === null) {
             console.log("error occured: ", err);
@@ -61,7 +61,8 @@ module.exports = {
       }
       else{ // 북마크가 없으면 추가
         // [start] 북마크 추가
-        postOptions = {
+        console.log(req.params.sys_regno);
+        postBookmarkCreateOptions = {
           host: 'stop_bang_sub_DB',
           port: process.env.PORT,
           path: `/db/bookmark/create`,
@@ -70,12 +71,12 @@ module.exports = {
             'Content-Type': 'application/json',
           }
         }
-        requestBody = {
+        bookmarkCreateRequestBody = {
           r_id: r_id,
           sys_regno: req.params.sys_regno
         }
     
-        httpRequest(postOptions, requestBody)
+        httpRequest(postBookmarkCreateOptions, bookmarkCreateRequestBody)
         .then(result => {
           if (result === null) {
             console.log("error occured: ", err);
