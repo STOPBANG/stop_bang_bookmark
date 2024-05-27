@@ -10,6 +10,6 @@ router.use((req, res, next) => {
 });
 
 /* 열람 후기 관련 */
-router.get("/myReview", residentController.myReview);
+router.get("/openReview", residentController.myReview);
 
 module.exports = router;
