@@ -28,7 +28,7 @@ module.exports = {
         // 리뷰 테이블에서 rv_id=?인 데이터 가져오기
         console.log("리뷰 테이블에서 rv_id=?인 데이터 가져오기");
         const reviewGetOptions = {
-            host: 'stop_bang_review_DB',
+            host: 'review-api',
             port: process.env.PORT,
             path: `/db/review/findAllByReviewId/${rv_id}`,
             method: 'GET',
@@ -50,7 +50,7 @@ module.exports = {
             // 두 번째 요청: resident 테이블에서 데이터 가져오기
             console.log("resident 테이블에서 데이터 가져오기");
             const residentPostOptions = {
-                host: 'stop_bang_auth_DB',
+                host: 'auth-api',
                 port: process.env.PORT,
                 path: `/db/resident/findByPk`,
                 method: 'POST',
@@ -68,7 +68,7 @@ module.exports = {
             // 세 번째 요청: 신고 테이블에 데이터 삽입
             console.log("신고 테이블에 데이터 삽입");
             const reportPostOptions = {
-                host: 'stop_bang_sub_DB',
+                host: 'sub-api',
                 port: process.env.PORT,
                 path: `/db/report/create`,
                 method: 'POST',

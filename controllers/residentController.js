@@ -9,7 +9,7 @@ module.exports = {
         /* msa */
         const user_id = req.headers.id;
         const getOptions = {
-          host: 'stop_bang_sub_DB',
+          host: 'sub-api',
           port: process.env.MS_PORT,
           path: `/db/openedReview/findAllById/${user_id}`,
           method: 'GET',

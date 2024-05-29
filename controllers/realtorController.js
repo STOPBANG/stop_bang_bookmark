@@ -9,7 +9,7 @@ module.exports = {
 
     // [start] 로그인 계정 r_id 가져오기
     postOptions = {
-      host: 'stop_bang_auth_DB',
+      host: 'auth-api',
       port: process.env.PORT,
       path: `/db/resident/findById`,
       method: 'POST',
@@ -25,7 +25,7 @@ module.exports = {
 
       // [start] 북마크 조회
       const getBookmarkOptions = {
-        host: 'stop_bang_sub_DB',
+        host: 'sub-api',
         port: process.env.PORT,
         path: `/db/bookmark/findALLByIdnRegno/${r_id}/${sys_regno}`,
         method: 'GET',
@@ -39,7 +39,7 @@ module.exports = {
         if(getBookmarkResult.body[0] != undefined){
           // [start] 북마크 삭제
           postBookmarkDeleteOptions = {
-            host: 'stop_bang_sub_DB',
+            host: 'sub-api',
             port: process.env.PORT,
             path: `/db/bookmark/delete`,
             method: 'POST',
@@ -64,7 +64,7 @@ module.exports = {
         else{
           // [start] 북마크 추가
           postBookmarkCreateOptions = {
-            host: 'stop_bang_sub_DB',
+            host: 'sub-api',
             port: process.env.PORT,
             path: `/db/bookmark/create`,
             method: 'POST',
