@@ -12,4 +12,7 @@ router.use((req, res, next) => {
 // 후기 신고
 router.post('/report', agentController.reporting);
 
+// 후기별 공인중개사 신고 여부 확인
+router.get('/isReported/:a_username', agentController.isReported);
+
 module.exports = router;
