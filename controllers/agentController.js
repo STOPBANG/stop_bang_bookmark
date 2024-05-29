@@ -92,6 +92,64 @@ module.exports = {
             console.error(err);
             return res.render('error.ejs', { message: "처리 중 오류가 발생했습니다." });
         }
+    },
+
+    // 후기별 공인중개사 신고 여부 확인
+    // router.get('/isReported/:rv_id', agentController.isReported);
+    isReported: async (req, res) => {
+        console.log("ms_Bookmark: isReported 함수 시작");
+        // // 쿠키로부터 로그인 계정 알아오기
+        // console.log("login 계정 알아오는 단계");
+        // if (req.cookies.authToken == undefined) {
+        //     return res.render('notFound.ejs', { message: "로그인이 필요합니다" });
+        // } 
+    
+        // let decoded;
+        // console.log("try문 시작");
+        // try {
+        //     decoded = jwt.verify(req.cookies.authToken, process.env.JWT_SECRET_KEY);
+        //     console.log("jwt.verify완료");
+        // } catch (err) {
+        //     return res.render('notFound.ejs', { message: "로그인이 필요합니다" });
+        // }
+    
+        // const a_username = decoded.userId; // 사용자 이름
+        // console.log("agent name: ", a_username);
+        // let a_id = decoded.userId;
+        // if (a_id === null) return res.render('notFound.ejs', { message: "로그인이 필요합니다" });
+
+        getReportOptions = {
+            host: "stop_bang_sub_DB",
+            port: process.env.PORT,
+            path: `/db/report/findAll/${req.params.a_username}`,
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+
+        const reportRes = await httpRequest(getReportOptions);
+        console.log("신고 정보 가져옴");
+        if (reportRes.body) {
+            console.log("reportRes!!!!!: ", reportRes.body);
+            let responseArray = []; // response 배열 선언
+            reportRes.body.forEach(report => {
+                // reporter와 repo_rv_id가 같은 객체인지 확인
+                const existingReport = responseArray.find(item => 
+                    item.reporter === report.reporter && item.repo_rv_id === report.repo_rv_id
+                );
+                // 해당 객체가 response 배열에 없으면 추가
+                if (!existingReport) {
+                    responseArray.push(report);
+                }
+            });
+            console.log("reported reviews: ", responseArray);
+            return res.json(responseArray); // 중복 제거된 배열 반환
+        } else {
+            console.log("신고 정보를 가져올 수 없음");
+            return res.json({}); // 정보가 없는 경우 빈 배열 반환
+        }
+        
     }
     
 };
