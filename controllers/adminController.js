@@ -8,7 +8,7 @@ module.exports = {
     try {
       // 1. 모든 신고 데이터를 가져오기
       const reportPostOptions = {
-        host: 'stop_bang_sub_DB',
+        host: 'sub-api',
         port: process.env.PORT,
         path: `/db/report/getAllReports`,
         method: 'GET',
@@ -28,7 +28,7 @@ module.exports = {
       for (const reviewId of reviewIds) {
         // 3-1. 리뷰 아이디를 이용하여 리뷰 데이터 가져오기
         const reviewPostOptions = {
-            host: 'stop_bang_review_DB',
+            host: 'review-api',
             port: process.env.PORT,
             path: `/db/review/findAllByReviewId/${reviewId}`,
             method: 'GET',
@@ -79,7 +79,7 @@ module.exports = {
 
     // 신고 데이터 가져오기
     reportPostOptions = {
-        host: 'stop_bang_sub_DB',
+        host: 'sub-api',
         port: process.env.PORT,
         path: `/db/report/findOne/${rv_id}/${reporter}`,
         method: 'GET',
@@ -91,7 +91,7 @@ module.exports = {
 
     // 리뷰 데이터 가져오기
     reviewPostOptions = {
-        host: 'stop_bang_review_DB',
+        host: 'review-api',
         port: process.env.PORT,
         path: `/db/review/findBy/${rv_id}/${reporter}`, // 이건 아직 리뷰 모델에 없음
         method: 'GET',
@@ -126,7 +126,7 @@ module.exports = {
     const rv_id = req.body.rv_id;
 
     postOptions = {
-        host: 'stop_bang_sub_DB',
+        host: 'sub-api',
         port: process.env.PORT,
         path: `/db/report/delete`,
         method: 'POST',
@@ -153,7 +153,7 @@ module.exports = {
     // 원래 트랜잭션인데.... 흠 어떻게 하지
 
     reportPostOptions = {
-      host: 'stop_bang_sub_DB',
+      host: 'sub-api',
       port: process.env.PORT,
       path: `/db/report/delete`,
       method: 'POST',
@@ -163,7 +163,7 @@ module.exports = {
     };
 
     reviewPostOptions = {
-      host: 'stop_bang_review_DB',
+      host: 'review-api',
       port: process.env.PORT,
       path: `/db/review/delete`,
       method: 'POST',
@@ -173,7 +173,7 @@ module.exports = {
     };
 
     openedReviewPostOptions = {
-      host: 'stop_bang_sub_DB',
+      host: 'sub-api',
       port: process.env.PORT,
       path: `/db/openedReview/delete`, 
       method: 'POST',
