@@ -1,8 +1,45 @@
 const e = require("express");
 const jwt = require("jsonwebtoken");
 const { httpRequest } = require('../utils/httpRequest.js');
+const fs = require("fs");
+const amqp = require('amqplib');
+
+if (!process.env.RABBIT) {
+    throw new Error("Please specify the name of the RabbitMQ host using environment variable RABBIT");
+}
+
+const RABBIT = process.env.RABBIT;
 
 module.exports = {
+    sendReportMessage: async (reportDetails, res) => {
+        try {
+            console.log("sendReportMessage started");
+            console.log("Rabbitmq server: ", `${RABBIT}`);
+            const connection = await amqp.connect(`${RABBIT}`); // 래빗엠큐 서버 URL
+            const channel = await connection.createChannel();
+    
+            const queue = 'reportQueue';
+            await channel.assertQueue(queue, {
+                durable: true
+            });
+    
+            const msg = JSON.stringify(reportDetails);
+            console.log("msg: ", msg);
+            channel.sendToQueue(queue, Buffer.from(msg), {
+                persistent: true
+            });
+    
+            console.log("신고 메시지가 래빗엠큐에 발행되었습니다.");
+            await channel.close();
+            await connection.close();
+
+            return { success: true };
+
+        } catch (error) {
+            console.error('래빗엠큐 연결 또는 메시지 발행 중 오류 발생:', error);
+        }
+    },
+
     reporting: async (req, res) => {
         console.log("ms_Bookmark: reporting 함수 시작");
         // 쿠키로부터 로그인 계정 알아오기
@@ -40,12 +77,11 @@ module.exports = {
         try {
             // 첫 번째 요청: 리뷰 데이터 가져오기
             const reviewResult = await httpRequest(reviewGetOptions);
-            // console.log("Review 조회 결과:", reviewResult.body);
-            console.log("Review(rv_id): ", reviewResult.body[0].id);
+            // console.log("Review(rv_id): ", reviewResult.body[0].id);
             const resident_r_id = reviewResult.body[0].resident_r_id;
-            console.log("입주민 id: ", resident_r_id);
+            // console.log("입주민 id: ", resident_r_id);
             const agentList_ra_regno = reviewResult.body[0].agentList_ra_regno;
-            console.log("공인중개사 ra_regno: ", agentList_ra_regno);
+            // console.log("공인중개사 ra_regno: ", agentList_ra_regno);
     
             // 두 번째 요청: resident 테이블에서 데이터 가져오기
             console.log("resident 테이블에서 데이터 가져오기");
@@ -61,21 +97,20 @@ module.exports = {
             let residentRequestBody = { resident_r_id: resident_r_id };
     
             const residentResult = await httpRequest(residentPostOptions, residentRequestBody);
-            // console.log("Resident: ", residentResult.body);
             const username = residentResult.body[0].r_username;
-            console.log("후기 작성자: ", username);
+            // console.log("후기 작성자: ", username);
 
             // 세 번째 요청: 신고 테이블에 데이터 삽입
-            console.log("신고 테이블에 데이터 삽입");
-            const reportPostOptions = {
-                host: 'sub-api',
-                port: process.env.PORT,
-                path: `/db/report/create`,
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            };
+            console.log("[간접메시징요청] 신고 테이블에 데이터 삽입");
+            // const reportPostOptions = {
+            //     host: 'sub-api',
+            //     port: process.env.PORT,
+            //     path: `/db/report/create`,
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     }
+            // };
             let reportRequestBody = {
                 repo_rv_id: rv_id,
                 reporter: a_username,
@@ -84,9 +119,16 @@ module.exports = {
                 sys_regno: agentList_ra_regno
             };
     
-            await httpRequest(reportPostOptions, reportRequestBody);
-            console.log("신고완료");
-            return res.json(agentList_ra_regno);
+            // const reportResult = await httpRequest(reportPostOptions, reportRequestBody);
+            const reportResult = await module.exports.sendReportMessage(reportRequestBody);
+            console.log(reportResult);
+            if (reportResult.success) {
+                console.log("신고완료");
+                return res.json(agentList_ra_regno);
+            } else {
+                console.error('신고 실패:', reportResult.error);
+                return res.render('error.ejs', { message: "처리 중 오류가 발생했습니다." });
+            }
     
         } catch (err) {
             console.error(err);
@@ -119,7 +161,7 @@ module.exports = {
         // if (a_id === null) return res.render('notFound.ejs', { message: "로그인이 필요합니다" });
 
         getReportOptions = {
-            host: "stop_bang_sub_DB",
+            host: "sub-api",
             port: process.env.PORT,
             path: `/db/report/findAll/${req.params.a_username}`,
             method: "GET",
